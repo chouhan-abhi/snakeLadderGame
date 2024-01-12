@@ -1,6 +1,6 @@
 import React from "react";
 import * as R from "ramda";
-import { EachBox } from "./EachBox";
+import { BoardCells } from "./BoardCells";
 
 const Board = ({ updatedState }) => {
   const renderBoxes = R.pipe(
@@ -10,7 +10,7 @@ const Board = ({ updatedState }) => {
         {R.map(box => (
           <div key={box} className="box">
             <span>
-              <EachBox
+              <BoardCells
                 boxIndex={box}
                 updatedState={updatedState}
                 numOfPlayers={updatedState.numOfPlayers}

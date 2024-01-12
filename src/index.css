@@ -82,6 +82,7 @@ li {
   width: 20px;
   background-color: #555;
   border-radius: 50%;
+  box-shadow: 1px 1px 6px #333;
 }
 .layout {
   width: 800px;

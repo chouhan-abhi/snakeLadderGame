@@ -1,7 +1,7 @@
 import React from "react";
 import { SNAKE_POSITIONS, LADDER_POSITIONS, PLAYER_COLORS } from "../utils/constants";
 
-export const EachBox = (props) => {
+export const BoardCells = (props) => {
     const { boxIndex, updatedState } = props;
     const { playerCount } = updatedState;
 
