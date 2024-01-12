@@ -1,12 +1,12 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { SetPlayers } from "./utils/SetPlayer";
-import { Board } from "./components/Layout";
 import { Instructions } from "./components/Instructions";
 import Dice from "./components/Dice";
 import { SNAKE_POSITIONS, LADDER_POSITIONS, PLAYER_LIMIT, PLAYER_COLORS } from "./utils/constants";
 import { NotificationType, getPlayers, notify } from "./utils/utils";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+const LazyBoard = lazy(() => import("./components/GameBoard"));
 
 class App extends React.Component {
 
@@ -72,7 +72,7 @@ class App extends React.Component {
       }
     });
   };
-  
+
   updatePlayerPosition = () => {
     const currentChance = this.state.playersTurn;
     const currentPlayerPostion = this.state[currentChance].currentPosition;
@@ -112,8 +112,8 @@ class App extends React.Component {
     this.updateTurn();
   };
 
-  PlayerIcon = (playerDetails:{playerName: string, index: number}) => {
-    const {playerName, index} = playerDetails;
+  PlayerIcon = (playerDetails: { playerName: string, index: number }) => {
+    const { playerName, index } = playerDetails;
     return <div className={`playerIndicator`} style={{ backgroundColor: PLAYER_COLORS[index], display: "inline-block", padding: '1px' }}> {playerName}</div>
   };
 
@@ -138,11 +138,11 @@ class App extends React.Component {
         )}
         {isBoardRendered && (
           <>
-            <p>Players are { 
-              getPlayers(playerCount)?.trim()?.split(' ')?.map( (playerName, index) => <this.PlayerIcon playerName={playerName} index={index} /> )
-              }
+            <p>Players are {
+              getPlayers(playerCount)?.trim()?.split(' ')?.map((playerName, index) => <this.PlayerIcon playerName={playerName} index={index} />)
+            }
             </p>
-            <p>Turn <this.PlayerIcon playerName={playersTurn} index={parseInt(playersTurn.replace('P','')) - 1} /></p>
+            <p>Turn <this.PlayerIcon playerName={playersTurn} index={parseInt(playersTurn.replace('P', '')) - 1} /></p>
             <Dice rollDice={this.getDiceValue} />
           </>
         )}
@@ -154,7 +154,11 @@ class App extends React.Component {
   RightContainer = () => {
     const { isBoardRendered } = this.state;
     return (<div className="right-container">
-      {isBoardRendered && <Board updatedState={this.state} />}
+      {isBoardRendered && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <LazyBoard updatedState={this.state} />
+        </Suspense>)
+      }
     </div>)
   }
 
