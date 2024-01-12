@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import { PLAYER_COLORS } from "../utils/constants";
 
-export const Instructions = (props) => {
-    const { playerCount } = props;
+export const Instructions = () => {
     const [showInstructions, setShowInstructions] = useState(false)
 
     const handleClick = () => {
@@ -33,12 +31,6 @@ export const Instructions = (props) => {
         <div>
             <div onClick={handleClick}>{showInstructions ? '- Hide' : '+ Show'} instructions</div>
             {showInstructions && <InstructionList />}
-            {PLAYER_COLORS.slice(0, playerCount).map(
-                (playerColor, index) => ( 
-                <div className="P2_shape" style={{ display: 'inline-block', backgroundColor: playerColor }}>
-                    {index + 1}
-                </div> )
-            )}
         </div>
     );
 };

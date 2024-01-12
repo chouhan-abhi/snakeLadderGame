@@ -18,7 +18,7 @@ const notify = (message: string, notificationType?: NotificationType) => {
 }
 
 const getPlayers = (playerCount: number): string => {
-    let str = "";
+    let str = [];
     for (let i = 1; i <= playerCount; i++) {
       str = str + ` P${i}`;
     }

@@ -3,7 +3,7 @@ import { SetPlayers } from "./utils/SetPlayer";
 import { Board } from "./components/Layout";
 import { Instructions } from "./components/Instructions";
 import Dice from "./components/Dice";
-import { SNAKE_POSITIONS, LADDER_POSITIONS, PLAYER_LIMIT } from "./utils/constants";
+import { SNAKE_POSITIONS, LADDER_POSITIONS, PLAYER_LIMIT, PLAYER_COLORS } from "./utils/constants";
 import { NotificationType, getPlayers, notify } from "./utils/utils";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,6 +14,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       playerCount: PLAYER_LIMIT.min + 1,
+      isPlayerCountValid: true,
       isPlayerSelectionHidden: false
     };
   }
@@ -22,7 +23,7 @@ class App extends React.Component {
     const { value } = e.target;
     this.setState({
       playerCount: value,
-      isPlayerCountValid: value > PLAYER_LIMIT.min || value < PLAYER_LIMIT.min
+      isPlayerCountValid: value > PLAYER_LIMIT.min || value < PLAYER_LIMIT.max
     });
   };
 
@@ -39,13 +40,6 @@ class App extends React.Component {
       ...playersState,
       playersTurn: "P1"
     });
-  };
-
-  updateTurn = () => {
-    const { playersTurn, playerCount } = this.state;
-    const currentChance = playersTurn;
-    const playerIndex = currentChance.replace('P', '');
-    this.setState({ playerTurn: playerIndex === playerCount.toString() ? 'P1' : `P${Number(playerIndex) + 1}` });
   };
 
   checkSnakeOrLadder = () => {
@@ -84,7 +78,7 @@ class App extends React.Component {
     const currentPlayerPostion = this.state[currentChance].currentPosition;
 
     if (currentPlayerPostion + this.state.diceValue >= 100) {
-      notify(`Game Over !!! Congrats ${currentChance}`, NotificationType.success);
+      notify(`Game Over! Congrats ${currentChance}`, NotificationType.success);
       this.setState({
         playerCount: 2,
         isPlayerSelectionHidden: false,
@@ -102,12 +96,25 @@ class App extends React.Component {
     );
   };
 
+  updateTurn = () => {
+    const { playersTurn, playerCount } = this.state;
+    const currentChance = playersTurn;
+    const playerIndex = currentChance.replace('P', '');
+    const updatedPlayerIndex = playerIndex === playerCount.toString() ? 'P1' : `P${Number(playerIndex) + 1}`;
+    this.setState({ playersTurn: updatedPlayerIndex });
+  };
+
   getDiceValue = (diceRolledValue: number) => {
     this.setState(
       { diceValue: diceRolledValue },
       this.updatePlayerPosition
     );
     this.updateTurn();
+  };
+
+  PlayerIcon = (playerDetails:{playerName: string, index: number}) => {
+    const {playerName, index} = playerDetails;
+    return <div className={`playerIndicator`} style={{ backgroundColor: PLAYER_COLORS[index], display: "inline-block", padding: '1px' }}> {playerName}</div>
   };
 
   LeftContainer = () => {
@@ -131,12 +138,15 @@ class App extends React.Component {
         )}
         {isBoardRendered && (
           <>
-            <p>Players are {getPlayers(playerCount)}</p>
-            <p>Chance to Roll Dice is with {playersTurn}</p>
+            <p>Players are { 
+              getPlayers(playerCount)?.trim()?.split(' ')?.map( (playerName, index) => <this.PlayerIcon playerName={playerName} index={index} /> )
+              }
+            </p>
+            <p>Turn <this.PlayerIcon playerName={playersTurn} index={parseInt(playersTurn.replace('P','')) - 1} /></p>
             <Dice rollDice={this.getDiceValue} />
           </>
         )}
-        <Instructions playerCount={playerCount} />
+        <Instructions />
       </div>
     )
   }
@@ -149,7 +159,6 @@ class App extends React.Component {
   }
 
   render() {
-
     return (
       <div className="App">
         <ToastContainer />

@@ -19,26 +19,26 @@ export const EachBox = (props) => {
         return arr;
     };
     const checkIfSnakeOrLadderPresent = () => {
-        let a = "";
+        let element;;
         SNAKE_POSITIONS.forEach(snake => {
             if (snake.currentPosition === boxIndex) {
-                a = <div className="snake"><PropsImage isLadder={false} /></div>;
+                element = <div className="snake"><PropsImage isLadder={false} /></div>;
             }
         });
         LADDER_POSITIONS.forEach(ladder => {
             if (ladder.currentPosition === boxIndex) {
-                a = <div className="ladder"><PropsImage isLadder /></div>;
+                element = <div className="ladder"><PropsImage isLadder /></div>;
             }
         });
-        return a;
+        return element;
     };
     return (
         <div className="each-box">
             <div className="icons-in-box">
-                {getPlayerNamesArr().map(playerName => {
+                {getPlayerNamesArr().map((playerName, index) => {
                     return (
                         updatedState['P' + playerName].currentPosition === boxIndex && (
-                            <div className={`P2_Indicator`} style={{ backgroundColor: PLAYER_COLORS[playerName] }}> {playerName}</div>
+                            <div className={`playerIndicator`} style={{ backgroundColor: PLAYER_COLORS[index] }}> P{playerName}</div>
                         )
                     );
                 })}
